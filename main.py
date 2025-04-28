@@ -1,15 +1,21 @@
-from src.NoriNori import *
+from pycryptosat import Solver
+from fichier import ecrire_fichier
 
-def main():
-    N = int(input("entrer la taille du terrain \n"))
-    Nori = NoriNori(N)
-    Nori.initGrid()
-    Nori.grid[0][0][1]
-    Nori.printGrid()
-    print(Nori.isNeighbor((1,3), (1,2)))
-    FileName = str(input("what is the file name or storage \n"))
-    Nori.writeGrid(FileName)
+grille = '112222134445133455163667166667666888'
+ecrire_fichier(grille)
 
+s = Solver()
 
-if __name__ =="__main__":
-    main()
+# Lire le fichier CNF
+with open("clauses.cnf", "r") as f:
+    for line in f:
+        if line.startswith('p') or line.startswith('c'):
+            continue
+        clause = list(map(int, line.strip().split()))
+        s.add_clause(clause)
+
+sat, solution = s.solve()
+if sat:
+    print("Solution :", [i for i in range(len(solution)) if solution[i]]) 
+else:
+    print("Insatisfiable")
