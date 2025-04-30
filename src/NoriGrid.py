@@ -13,8 +13,7 @@ class NoriNori:
     def initRegion(self) -> None:
         print("attend Ahki")
     
-
-    def isNeighbor(self,coupleCheck: tuple[int, int], coupleNeighbor:tuple[int, int]) -> bool:
+    def isNeighbor(self,coupleCheck: tuple[int, int], coupleNeighbor: tuple[int, int]) -> bool:
         if ((coupleNeighbor[0] == coupleCheck[0]+1) ^ (coupleNeighbor[1] == coupleCheck[1]+1)) or ((coupleNeighbor[0] == coupleCheck[0]-1) ^ (coupleNeighbor[1] == coupleCheck[1]-1)):
             return True
         else:
@@ -37,6 +36,7 @@ class NoriNori:
             Fgrid.write(str(*i))
             Fgrid.write(" ")
         Fgrid.write("f")
+
 if __name__ == "__main__":
     N = int(input("entrer la taille du terrain \n"))
     Nori = NoriNori(N)
