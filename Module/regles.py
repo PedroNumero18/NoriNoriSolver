@@ -19,7 +19,6 @@ def definition_zones(grille):
 
     return list(dict_zones.values())
 
-
 '''
 On définit une liste de chaque case de la grille et de ses cases voisines
 Par exemple, liste[0] sera [1,2,7] si la grille est de taille 6
@@ -46,8 +45,6 @@ def definition_voisines(grille):
         ensemble_cases_voisines.append(cases_voisines)
 
     return ensemble_cases_voisines
-
-
 
 def clauses_premmiere_regle(ensemble_fnd_fausses, ensemble_cases_voisines):
     clauses = ''
@@ -87,7 +84,6 @@ def clauses_premmiere_regle(ensemble_fnd_fausses, ensemble_cases_voisines):
     return clauses
     '''
 
-
 def premiere_regle(grille):
     ensemble_cases_voisines = definition_voisines(grille)
     ensemble_fnd_fausses = []
@@ -97,7 +93,6 @@ def premiere_regle(grille):
         ensemble_fnd_fausses.append(fnd_fausses)        
 
     return clauses_premmiere_regle(ensemble_fnd_fausses, ensemble_cases_voisines)
-
 
 def clauses_deuxieme_regle(ensemble_fnd_fausses, zones):
     clauses = ''
@@ -111,7 +106,6 @@ def clauses_deuxieme_regle(ensemble_fnd_fausses, zones):
 
     return clauses
 
-
 def deuxieme_regle(grille):
     zones = definition_zones(grille)
     ensemble_fnd_fausses = []
@@ -123,6 +117,13 @@ def deuxieme_regle(grille):
     return clauses_deuxieme_regle(ensemble_fnd_fausses, zones)
 
 
-
+if __name__ == "__main__":
+    grille = '112222134445133455163667166667666888'
+    try:
+        with open('test.txt', 'w', encoding='utf-8') as f:
+            f.write(deuxieme_regle(grille))
+            f.write(premiere_regle(grille))
+    except IOError as e:
+        print(f"Erreur : {e}")
 
     

@@ -4,14 +4,13 @@ SAT Solver and DIMACS Parser Module
 This module combines functionality for parsing DIMACS CNF format files and
 solving Boolean satisfiability problems using the DPLL algorithm from dpll.py.
 """
-from typing import Dict, List, Tuple, Optional, Set, Union
+from typing import Dict, List, Tuple, Optional
 from dpll import dpll, DpllNode
 
 class SatSolver:
     """
     A class that handles both parsing DIMACS CNF files and solving SAT problems.
     """
-    
     def __init__(self) -> None:
         """Initialize the SAT solver."""
         self.num_vars: int = 0
