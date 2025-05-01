@@ -5,7 +5,6 @@ Ce module fournit des fonctions pour convertir une grille NoriNori
 en formule CNF au format DIMACS, en utilisant les règles définies dans
 le module regles.py.
 """
-
 from typing import List, Dict, Optional
 from regles import premiere_regle, deuxieme_regle
 
@@ -23,7 +22,6 @@ def calculer_nombre_clauses(contenu_dimacs: str) -> int:
     return len([ligne for ligne in contenu_dimacs.strip().split('\n') 
                 if ligne and not ligne.startswith('c')])
 
-
 def calculer_nombre_variables(grille: List[List[int]]) -> int:
     """
     Calcule le nombre total de variables nécessaires pour représenter la grille.
@@ -37,7 +35,6 @@ def calculer_nombre_variables(grille: List[List[int]]) -> int:
     height: int = len(grille)
     width: int = len(grille[0]) if height > 0 else 0
     return height * width
-
 
 def generer_dimacs(grille: List[List[int]]) -> str:
     """
@@ -68,7 +65,6 @@ def generer_dimacs(grille: List[List[int]]) -> str:
     
     return en_tete + contenu_clauses
 
-
 def ecrire_dimacs(grille: List[List[int]], chemin_fichier: str = 'clauses.cnf') -> None:
     """
     Écrit un fichier DIMACS pour la grille NoriNori donnée.
@@ -86,7 +82,6 @@ def ecrire_dimacs(grille: List[List[int]], chemin_fichier: str = 'clauses.cnf') 
     except IOError as e:
         print(f"Erreur lors de l'écriture du fichier DIMACS: {e}")
         raise
-
 
 def valider_grille(grille: List[List[int]]) -> bool:
     """
@@ -130,7 +125,6 @@ def valider_grille(grille: List[List[int]]) -> bool:
     
     return True
 
-
 def convertir_grille(grille: List[List[int]], chemin_fichier: Optional[str] = None) -> str:
     """
     Convertit une grille NoriNori en fichier DIMACS et retourne le contenu.
@@ -163,14 +157,14 @@ def convertir_grille(grille: List[List[int]], chemin_fichier: Optional[str] = No
     
     return contenu_dimacs
 
-
 if __name__ == "__main__":
     # Exemple d'utilisation avec une petite grille 2x2
     # Région 1: les deux cellules en haut
     # Région 2: les deux cellules en bas
     grille_exemple: List[List[int]] = [
-        [1, 1],
-        [2, 2]
+        [1, 1, 1],
+        [2, 2, 2],
+        [3, 3, 3]
     ]
     
     # Écrire dans un répertoire DIMACS (créé si nécessaire)

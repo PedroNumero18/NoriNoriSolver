@@ -6,15 +6,14 @@ class NoriNori:
         self.size = size
     
     def initGrid(self) -> None:
-        for i in range(self.size):
-            for j in range(self.size): 
-                self.grid.append([(i, j)])
+        for i in range(self.size**2): 
+            self.grid.append([(i, False)])
 
     def initRegion(self) -> None:
         print("attend Ahki")
     
-    def isNeighbor(self,coupleCheck: tuple[int, int], coupleNeighbor: tuple[int, int]) -> bool:
-        if ((coupleNeighbor[0] == coupleCheck[0]+1) ^ (coupleNeighbor[1] == coupleCheck[1]+1)) or ((coupleNeighbor[0] == coupleCheck[0]-1) ^ (coupleNeighbor[1] == coupleCheck[1]-1)):
+    def isNeighbor(self,coupleCheck: tuple[int, bool], coupleNeighbor: tuple[int, bool]) -> bool:
+        if ((coupleNeighbor[0] == coupleCheck[0]+1) ^ (coupleNeighbor[0] == coupleCheck[0]-1)):
             return True
         else:
             return False       
@@ -42,6 +41,6 @@ if __name__ == "__main__":
     Nori = NoriNori(N)
     Nori.initGrid()
     Nori.printGrid()
-    print(Nori.isNeighbor((1,3), (1,2)))
-    FileName = input("where is the file")
+    print(Nori.isNeighbor((1,False), (2,False)))
+    FileName = input("where is the file\n")
     Nori.writeGrid(FileName)

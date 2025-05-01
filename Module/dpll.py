@@ -28,13 +28,14 @@ class DpllNode:
         
         return new_clauses
 
-    def dpll(clauses: List[List[int]], assignment: Dict[int, Optional[bool]], num_vars: int, node: Optional[DpllNode] = None) -> bool:
+    def dpll(clauses: List[List[int]], assignment: Dict[int, Optional[bool]], num_vars: int, node: Optional['DpllNode'] = None) -> bool:
         """DPLL algorithm implementation with binary tree representation."""
         if len(clauses) == 0:
             return True
         
         if any(len(clause) == 0 for clause in clauses):
             return False
+
         
         # Unit propagation
         while True:
@@ -92,13 +93,13 @@ class DpllNode:
                 # True branch
                 true_assignment: Dict[int, Optional[bool]] = assignment.copy()
                 true_assignment[var] = True
-                new_clauses_true: Optional[List[List[int]]] = apply_assignment(clauses, var, True)
+                new_clauses_true: Optional[List[List[int]]] = DpllNode.apply_assignment(clauses, var, True)
                 
                 true_node: DpllNode = DpllNode(true_assignment, var, True)
                 if node:
                     node.right = true_node
                 
-                if new_clauses_true is not None and dpll(new_clauses_true, true_assignment, num_vars, true_node):
+                if new_clauses_true is not None and DpllNode.dpll(new_clauses_true, true_assignment, num_vars, true_node):
                     true_node.is_solution = True
                     for k, v in true_assignment.items():
                         assignment[k] = v
@@ -107,13 +108,13 @@ class DpllNode:
                 # False branch
                 false_assignment: Dict[int, Optional[bool]] = assignment.copy()
                 false_assignment[var] = False
-                new_clauses_false: Optional[List[List[int]]] = apply_assignment(clauses, var, False)
+                new_clauses_false: Optional[List[List[int]]] = self.apply_assignment(clauses, var, False)
                 
                 false_node: DpllNode = DpllNode(false_assignment, var, False)
                 if node:
                     node.left = false_node
                     
-                if new_clauses_false is not None and dpll(new_clauses_false, false_assignment, num_vars, false_node):
+                if new_clauses_false is not None and self.dpll(new_clauses_false, false_assignment, num_vars, false_node):
                     false_node.is_solution = True
                     for k, v in false_assignment.items():
                         assignment[k] = v

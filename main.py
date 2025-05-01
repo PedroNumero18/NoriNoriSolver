@@ -16,7 +16,7 @@ def main():
             solver.add_clause(clause)
 
     sat, solution = solver.solve()
-
+    
     if sat:
         print("Solution :", [i for i in range(len(solution)) if solution[i]]) 
     else:

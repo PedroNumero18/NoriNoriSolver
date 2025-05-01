@@ -5,7 +5,7 @@ This module combines functionality for parsing DIMACS CNF format files and
 solving Boolean satisfiability problems using the DPLL algorithm from dpll.py.
 """
 from typing import Dict, List, Tuple, Optional
-from dpll import dpll, DpllNode
+from DPLL import DpllNode
 
 class SatSolver:
     """
@@ -112,7 +112,7 @@ class SatSolver:
         root_node: DpllNode = DpllNode(assignment)
         
         # Run the DPLL algorithm from dpll.py
-        result: bool = dpll(clauses_copy, assignment, self.num_vars, root_node)
+        result: bool = DpllNode.dpll(clauses_copy, assignment, self.num_vars, root_node)
         
         if result:
             # Ensure all variables have assignments (some might not be constrained)
@@ -138,3 +138,7 @@ class SatSolver:
         """
         self.parse_dimacs(file_path)
         return self.solve()
+    
+if __name__=="__main__":
+    s = SatSolver()
+    print(s.solve_file("DIMACS/exemple.cnf"))
