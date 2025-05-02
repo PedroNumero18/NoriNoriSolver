@@ -5,8 +5,9 @@ Ce module fournit des fonctions pour convertir une grille NoriNori
 en formule CNF au format DIMACS, en utilisant les règles définies dans
 le module regles.py.
 """
-from typing import List, Dict, Optional
-from regles import premiere_regle, deuxieme_regle
+from typing import List, Optional
+from Module.NoriGrid import NoriGrid
+from Module.regles import premiere_regle, deuxieme_regle, nombre_variables
 
 
 def calculer_nombre_clauses(contenu_dimacs: str) -> int:
@@ -22,21 +23,7 @@ def calculer_nombre_clauses(contenu_dimacs: str) -> int:
     return len([ligne for ligne in contenu_dimacs.strip().split('\n') 
                 if ligne and not ligne.startswith('c')])
 
-def calculer_nombre_variables(grille: List[List[int]]) -> int:
-    """
-    Calcule le nombre total de variables nécessaires pour représenter la grille.
-    
-    Args:
-        grille: Une grille où chaque cellule contient l'identifiant de sa région
-        
-    Returns:
-        Le nombre total de variables (une par cellule)
-    """
-    height: int = len(grille)
-    width: int = len(grille[0]) if height > 0 else 0
-    return height * width
-
-def generer_dimacs(grille: List[List[int]]) -> str:
+def generer_dimacs(grille: NoriGrid) -> str:
     """
     Génère le contenu complet du fichier DIMACS pour la grille donnée.
     
@@ -54,18 +41,18 @@ def generer_dimacs(grille: List[List[int]]) -> str:
     contenu_clauses: str = clauses_regle2 + clauses_regle1
     
     # Calculer le nombre de variables et de clauses
-    num_vars: int = calculer_nombre_variables(grille)
+    num_vars: int = nombre_variables(grille)
     num_clauses: int = calculer_nombre_clauses(contenu_clauses)
     
     # Construire l'en-tête du fichier DIMACS
     en_tete: str = (
-        f"c Fichier DIMACS CNF pour un puzzle NoriNori de taille {len(grille)}x{len(grille[0])}\n"
+        f"c Fichier DIMACS CNF pour un puzzle NoriNori de taille {grille.width}x{grille.height}\n"
         f"p cnf {num_vars} {num_clauses}\n"
     )
     
     return en_tete + contenu_clauses
 
-def ecrire_dimacs(grille: List[List[int]], chemin_fichier: str = 'clauses.cnf') -> None:
+def ecrire_dimacs(grille: NoriGrid, chemin_fichier: str = 'clauses.cnf') -> None:
     """
     Écrit un fichier DIMACS pour la grille NoriNori donnée.
     Args:
@@ -75,6 +62,7 @@ def ecrire_dimacs(grille: List[List[int]], chemin_fichier: str = 'clauses.cnf') 
     Raises:
         IOError: Si l'écriture du fichier échoue
     """
+    print(type(grille))
     try:
         with open(chemin_fichier, 'w', encoding='utf-8') as f:
             f.write(generer_dimacs(grille))
@@ -83,7 +71,7 @@ def ecrire_dimacs(grille: List[List[int]], chemin_fichier: str = 'clauses.cnf') 
         print(f"Erreur lors de l'écriture du fichier DIMACS: {e}")
         raise
 
-def valider_grille(grille: List[List[int]]) -> bool:
+def valider_grille(Nori: NoriGrid) -> bool:
     """
     Valide une grille NoriNori.
     
@@ -96,32 +84,24 @@ def valider_grille(grille: List[List[int]]) -> bool:
     Raises:
         ValueError: Si la grille est invalide
     """
-    if not grille:
+    if not Nori.grid:
         raise ValueError("La grille est vide")
     
-    height: int = len(grille)
-    width: int = len(grille[0]) if height > 0 else 0
+    height: int = Nori.height
+    width: int = Nori.width if height > 0 else 0
     
     if width == 0:
         raise ValueError("La grille a une largeur de 0")
     
     # Vérifier que toutes les lignes ont la même longueur
-    for row in grille:
+    for row in Nori.grid:
         if len(row) != width:
             raise ValueError("Les lignes de la grille n'ont pas toutes la même longueur")
     
     # Vérifier que chaque région a au moins 2 cellules
-    regions: Dict[int, int] = {}
-    for row in grille:
-        for region_id in row:
-            if region_id in regions:
-                regions[region_id] += 1
-            else:
-                regions[region_id] = 1
-    
-    for region_id, count in regions.items():
-        if count < 2:
-            raise ValueError(f"La région {region_id} a seulement {count} cellule(s)")
+    for region_id, count in Nori.regions.items():
+        if len(count) < 2:
+            raise ValueError(f"La région {region_id} a seulement {len(count)} cellule(s)")
     
     return True
 
@@ -158,18 +138,8 @@ def convertir_grille(grille: List[List[int]], chemin_fichier: Optional[str] = No
     return contenu_dimacs
 
 if __name__ == "__main__":
-    # Exemple d'utilisation avec une petite grille 2x2
-    # Région 1: les deux cellules en haut
-    # Région 2: les deux cellules en bas
-    grille_exemple: List[List[int]] = [
-        [1, 1, 1],
-        [2, 2, 2],
-        [3, 3, 3]
-    ]
-    
-    # Écrire dans un répertoire DIMACS (créé si nécessaire)
-    ecrire_dimacs(grille_exemple, "DIMACS/exemple.cnf")
-    
+    grille_exemple: NoriGrid = NoriGrid(3, 3, 2)
+    #ecrire_dimacs(grille_exemple, "DIMACS/exemple.cnf")    
     # Utilisation alternative avec le contenu retourné
     contenu: str = convertir_grille(grille_exemple)
     print("\nContenu du fichier DIMACS généré:")
