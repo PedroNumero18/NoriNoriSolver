@@ -110,7 +110,7 @@ class SatSolver:
         
         # Create root node for DPLL decision tree (optional)
         root_node: DpllNode = DpllNode(assignment)
-        
+        DpllNode
         # Run the DPLL algorithm from dpll.py
         result: bool = DpllNode.dpll(clauses_copy, assignment, self.num_vars, root_node)
         

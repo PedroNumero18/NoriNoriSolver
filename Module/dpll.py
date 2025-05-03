@@ -108,13 +108,13 @@ class DpllNode:
                 # False branch
                 false_assignment: Dict[int, Optional[bool]] = assignment.copy()
                 false_assignment[var] = False
-                new_clauses_false: Optional[List[List[int]]] = self.apply_assignment(clauses, var, False)
+                new_clauses_false: Optional[List[List[int]]] = DpllNode.apply_assignment(clauses, var, False)
                 
                 false_node: DpllNode = DpllNode(false_assignment, var, False)
                 if node:
                     node.left = false_node
                     
-                if new_clauses_false is not None and self.dpll(new_clauses_false, false_assignment, num_vars, false_node):
+                if new_clauses_false is not None and DpllNode.dpll(new_clauses_false, false_assignment, num_vars, false_node):
                     false_node.is_solution = True
                     for k, v in false_assignment.items():
                         assignment[k] = v

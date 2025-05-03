@@ -5,11 +5,10 @@ from Module.DimacsGen import ecrire_dimacs, convertir_grille
 from Module.NoriGrid import NoriGrid
 def main():
     while True:
-        w = int(input("what width do you want\n"))
-        h = int(input("what height do you want\n"))
-        nbReg = (w * h)//2 if ((w * h) % 2) == 0 else m.floor((w*h)//2)
-        reg = rd.randint(1, nbReg)
-        Nori = NoriGrid(w, h, reg)
+        s = int(input("what size do you want\n")) 
+        nbReg = (s**2)/2
+        reg = rd.randint(1, m.floor(nbReg))
+        Nori = NoriGrid(s, s, reg)
         Nori.printGrid()
 
         #generation du fichier dimacs

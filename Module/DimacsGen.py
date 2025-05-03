@@ -62,7 +62,7 @@ def ecrire_dimacs(grille: NoriGrid, chemin_fichier: str = 'clauses.cnf') -> None
     Raises:
         IOError: Si l'écriture du fichier échoue
     """
-    print(type(grille))
+    
     try:
         with open(chemin_fichier, 'w', encoding='utf-8') as f:
             f.write(generer_dimacs(grille))

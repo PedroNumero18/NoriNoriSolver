@@ -99,7 +99,10 @@ class NoriGrid:
         
         for region_id in range(1, num_regions + 1):
             # Choisir une taille pour cette région (entre 2 et 6 cellules)
+            if len(unassigned_cells) < 2:
+                break  # or handle appropriately
             region_size = random.randint(2, min(6, len(unassigned_cells)))
+
             
             # Si pas assez de cellules restantes, terminer
             if len(unassigned_cells) < region_size:

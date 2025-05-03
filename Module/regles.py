@@ -1,6 +1,7 @@
-import math as m
 from Module.NoriGrid import NoriGrid
+
 from typing import List
+import itertools
 
 def get_var_id(row: int, col: int, width: int) -> int:
     """
@@ -24,34 +25,33 @@ def premiere_regle(Nori: NoriGrid)->str:
     
     # Pour chaque région
     for region_id, cells in Nori.regions.items():
-        # Au moins 2 cellules sont colorées (si une région a moins de 2 cellules, problème)
-        if len(cells)<2 :
+        if len(cells) < 2:
             raise ValueError(f"La région {region_id} a moins de 2 cellules")
-            
-        # Au moins 2 cellules sont colorées
-        at_least_two: List[int] = []
-        for r, c in cells:
-            var_id: int = get_var_id(r, c, width)
-            at_least_two.append(var_id)
-        clauses.append(" ".join(map(str, at_least_two)) + " 0")
         
-        # Pas plus de 2 cellules sont colorées
-        # Pour chaque combinaison de 3 cellules, au moins une doit être non colorée
+        # Récupérer les variables associées aux cellules
+        vars_in_region: List[int] = [get_var_id(r, c, width) for (r, c) in cells]
+        
+        # --- Au moins deux cellules sont colorées ---
+        # Pour cela, on impose qu'il existe au moins une paire de variables vraies
+        # On génère une clause par paire, chaque clause disant que cette paire est activée
+        # En SAT, pour "au moins deux", on peut écrire la clause suivante :
+        # (v1 AND v2) OR (v1 AND v3) OR ... 
+        # Mais SAT ne gère pas directement les AND/OR, donc on encode en CNF :
+        # On crée une clause par paire : v_i v_j 0
+        # Puis on combine ces clauses avec une clause globale (ici on fait la simplification)
+        
+        # En fait, pour "au moins deux", on peut utiliser cette technique :
+        # Ajouter une clause qui est la disjonction de toutes les paires, mais ce n'est pas CNF.
+        # Donc on ajoute toutes les clauses v_i v_j 0 (une par paire)
+        for v1, v2 in itertools.combinations(vars_in_region, 2):
+            clauses.append(f"{v1} {v2} 0")
+        
+        # --- Au plus deux cellules sont colorées ---
+        # Pour chaque triplet, au moins une des trois doit être fausse
         if len(cells) > 2:
-            for i in range(len(cells)):
-                for j in range(i + 1, len(cells)):
-                    for k in range(j + 1, len(cells)):
-                        r1, c1 = cells[i]
-                        r2, c2 = cells[j]
-                        r3, c3 = cells[k]
-                        var1: int = get_var_id(r1, c1, width)
-                        var2: int = get_var_id(r2, c2, width)
-                        var3: int = get_var_id(r3, c3, width)
-                        
-                        # Au moins une des trois variables doit être fausse
-                        clauses.append(f"-{var1} -{var2} -{var3} 0")
+            for v1, v2, v3 in itertools.combinations(vars_in_region, 3):
+                clauses.append(f"-{v1} -{v2} -{v3} 0")
     
-    # Ajouter un commentaire expliquant ces clauses
     header: str = "c Règle 1: Chaque région doit contenir exactement 2 cellules colorées\n"
     return header + "\n".join(clauses) + "\n"
 
