@@ -53,6 +53,3 @@ NoriNoriSolver is a Python project designed to generate and solve NoriNori grids
 
 This project was created as part of the INF402 course.
 
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for details.
